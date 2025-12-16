@@ -1,19 +1,30 @@
-import express from 'express'
-import cors from 'cors'
-import cantosRoutes from './routes/cantos.js'
-import misasRoutes from './routes/misas.js'
-import './db.js'
+const express = require('express')
+const cors = require('cors')
+const path = require('path')
 
 const app = express()
 
-app.use(cors())
+// CORS PRIMERO (CRÍTICO)
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type']
+}))
+
 app.use(express.json())
-app.use('/uploads', express.static('uploads'))
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
+// RUTAS
+const cantosRoutes = require('./routes/cantos')
 app.use('/api/cantos', cantosRoutes)
-app.use('/api/misas', misasRoutes)
 
-const PORT = process.env.PORT || 3001
-app.listen(PORT, () => {
-  console.log('Servidor listo en puerto', PORT)
+// RUTA RAÍZ
+app.get('/', (req, res) => {
+  res.send('API Coro Litúrgico funcionando')
 })
+
+const PORT = process.env.PORT || 3000
+app.listen(PORT, () => {
+  console.log('Servidor corriendo en puerto', PORT)
+})
+

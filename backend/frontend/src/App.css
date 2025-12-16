@@ -1,0 +1,29 @@
+import { useEffect, useState } from 'react'
+
+function App() {
+  const [cantos, setCantos] = useState([])
+
+  useEffect(() => {
+    fetch('https://coro-liturgico.onrender.com/api/cantos')
+      .then(res => res.json())
+      .then(data => setCantos(data))
+  }, [])
+
+  return (
+    <div style={{ padding: 20 }}>
+      <h1>Coro Litúrgico</h1>
+
+      {cantos.length === 0 && <p>No hay cantos cargados</p>}
+
+      <ul>
+        {cantos.map(canto => (
+          <li key={canto._id}>
+            {canto.titulo}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+export default App
