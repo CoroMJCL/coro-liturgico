@@ -383,6 +383,45 @@ nav button.active::after{
 .toast.show{opacity:1;transform:translateY(0);}
 
 /* ── MODAL ── */
+/* ── EDIT SONG PANEL ── */
+.edit-song-panel{
+  background:var(--accent-lt);border-top:2px solid var(--accent);
+  padding:12px 1.4rem;display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;
+  flex-shrink:0;
+}
+.edit-song-panel label{font-size:11px;font-weight:600;color:var(--accent-dk);display:block;margin-bottom:3px;}
+.edit-song-panel input{
+  background:var(--surface);border:1px solid var(--border2);border-radius:var(--rs);
+  color:var(--text);padding:6px 10px;font-size:13px;font-family:inherit;outline:none;
+  transition:border-color .12s;
+}
+.edit-song-panel input:focus{border-color:var(--accent);}
+.edit-field-name{flex:2;min-width:160px;}
+.edit-field-name input{width:100%;}
+.edit-field-author{flex:1;min-width:120px;}
+.edit-field-author input{width:100%;}
+.edit-moments-wrap{flex:2;min-width:180px;}
+.edit-moments-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
+.edit-moment-chip{
+  font-size:11px;padding:3px 10px;border-radius:20px;cursor:pointer;
+  border:1px solid var(--border2);color:var(--text2);background:var(--surface);
+  font-family:inherit;transition:all .12s;
+}
+.edit-moment-chip.on{font-weight:600;color:#fff;}
+.edit-moment-chip:hover{opacity:.85;}
+.edit-save-btn{
+  background:var(--accent);color:#fff;border:none;border-radius:var(--rs);
+  padding:7px 18px;cursor:pointer;font-size:13px;font-weight:600;
+  font-family:inherit;transition:background .12s;white-space:nowrap;align-self:flex-end;
+}
+.edit-save-btn:hover{background:var(--accent-dk);}
+.edit-delete-btn{
+  background:none;color:var(--red);border:1px solid var(--red);border-radius:var(--rs);
+  padding:7px 12px;cursor:pointer;font-size:12px;font-family:inherit;
+  transition:all .12s;white-space:nowrap;align-self:flex-end;
+}
+.edit-delete-btn:hover{background:#fce8e6;}
+
 .modal-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;
   display:flex;align-items:center;justify-content:center;
@@ -447,15 +486,90 @@ body.is-public .public-view{
 
 /* ── RESPONSIVE ── */
 @media(max-width:768px){
-  .sidebar{width:100%;position:absolute;left:-100%;top:0;bottom:0;z-index:50;transition:left .25s;}
-  .sidebar.open{left:0;}
+  /* ── HEADER ── */
+  header{padding:0 .8rem;height:52px;}
   .menu-toggle{display:flex;}
+  nav{gap:0;}
+  nav button{padding:5px 8px;font-size:12px;}
   nav button span:last-child{display:none;}
-  .pauta-meta{grid-template-columns:1fr;}
+  .user-pill .user-name,.user-pill .user-role{display:none;}
+  .btn-logout{padding:4px 8px;font-size:11px;}
+  .logo-text{font-size:13px;}
+
+  /* ── LAYOUT ── */
+  .app{height:calc(100vh - 52px);position:relative;}
+
+  /* ── SIDEBAR: panel deslizante desde la izquierda ── */
+  .sidebar{
+    width:88vw;max-width:320px;
+    position:absolute;left:-100%;top:0;bottom:0;z-index:50;
+    transition:left .25s;box-shadow:4px 0 20px rgba(0,0,0,.15);
+  }
+  .sidebar.open{left:0;}
+
+  /* ── OVERLAY al abrir sidebar ── */
+  .sidebar-overlay{
+    display:none;position:absolute;inset:0;background:rgba(0,0,0,.35);z-index:49;
+  }
+  .sidebar.open ~ .sidebar-overlay{display:block;}
+
+  /* ── SONG LIST items más grandes para touch ── */
+  .song-item{padding:11px 12px;min-height:56px;}
+  .song-title{font-size:14px;}
+  .song-sub{font-size:12px;}
+
+  /* ── SONG HEADER ── */
+  .song-view-header{padding:.7rem 1rem .6rem;}
+  .song-view-title{font-size:19px;}
+  .song-view-meta{font-size:11px;}
+
+  /* ── TOOLBAR: scroll horizontal ── */
+  .toolbar{
+    display:flex;flex-wrap:nowrap;overflow-x:auto;gap:5px;
+    padding-bottom:4px;-webkit-overflow-scrolling:touch;
+  }
+  .toolbar::-webkit-scrollbar{display:none;}
+  .tool-btn{white-space:nowrap;padding:6px 10px;font-size:12px;flex-shrink:0;}
+  .key-selector{flex-shrink:0;}
+
+  /* ── HOJA DE ACORDES ── */
   .sheet-columns{grid-template-columns:1fr;}
-  .song-sheet{padding:16px 14px 22px;}
+  .song-sheet{padding:16px 14px 22px;max-width:100%;}
   .sheet-tag{top:16px;right:14px;}
-  .user-pill .user-name{display:none;}
+  .sheet-title{font-size:18px;}
+  .syl-text{font-size:14px;}
+  .syl-chord{font-size:11px;}
+
+  /* ── AUDIO BAR ── */
+  .audio-bar{padding:.5rem .8rem;}
+
+  /* ── EDIT PANEL ── */
+  .edit-song-panel{flex-direction:column;gap:8px;padding:12px 1rem;}
+  .edit-field-name,.edit-field-author,.edit-moments-wrap{min-width:0;width:100%;}
+  .edit-save-btn,.edit-delete-btn{width:100%;text-align:center;}
+
+  /* ── PAUTA ── */
+  .pauta-meta{grid-template-columns:1fr;}
+  .pauta-view{padding:.8rem 1rem;}
+  .pauta-header{flex-direction:column;align-items:flex-start;}
+  .pauta-actions{width:100%;}
+  .pauta-actions .tool-btn{flex:1;justify-content:center;}
+
+  /* ── CONFIG ── */
+  .config-view{padding:.8rem 1rem;}
+  .add-user-row{flex-direction:column;}
+  .add-user-row input,.add-user-row select{width:100%;}
+
+  /* ── MODALES ── */
+  .modal{width:94vw;padding:1.1rem;}
+  .qr-modal{width:94vw;}
+}
+
+/* ── Pantallas muy pequeñas (iPhone SE, etc.) ── */
+@media(max-width:390px){
+  nav button{padding:4px 6px;font-size:11px;}
+  .song-view-title{font-size:17px;}
+  .tool-btn{padding:5px 8px;font-size:11px;}
 }
 </style>
 </head>
@@ -517,6 +631,7 @@ body.is-public .public-view{
     </div>
     <div class="song-list" id="song-list"></div>
   </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
   <main class="main">
     <!-- CANCIONES -->
@@ -868,7 +983,7 @@ function selectSong(id){
   }
   renderSongDetail(currentSong.key);
   renderList();
-  if(window.innerWidth<=768)document.getElementById('sidebar').classList.remove('open');
+  if(window.innerWidth<=768)closeSidebar();
 }
 function renderSongDetailReadOnly(){
   const s=currentSong;
@@ -939,6 +1054,7 @@ function renderSongDetail(displayKey){
         <button class="tool-btn" onclick="transposeBy(-1,'${displayKey}')">♭ Bajar</button>
         <button class="tool-btn" onclick="transposeBy(1,'${displayKey}')">♯ Subir</button>
         ${isDirector()?`<button class="tool-btn accent" onclick="addToPauta2(${s.id})">+ Pauta</button>`:''}
+        ${isDirector()?`<button class="tool-btn" onclick="toggleEditPanel(${s.id})">✏️ Editar</button>`:''}
         <button class="tool-btn" onclick="printSong()">🖨 Imprimir</button>
         ${s.pdfUrl?`<button class="tool-btn" onclick="window.open('${s.pdfUrl}','_blank')">📄 Ver PDF en Drive</button>`:'<span style="font-size:11px;color:var(--text3);padding:4px 8px">Sin PDF</span>'}
       </div>
@@ -949,7 +1065,72 @@ function renderSongDetail(displayKey){
       <div class="audio-info">
         <div class="audio-filename">${s.title}.mp3</div>
         <div class="audio-progress" onclick="seekAudio(event)"><div class="audio-fill" id="audio-fill"></div></div>
-      </div></div>`:`<div class="audio-bar"><span style="font-size:11px;color:var(--text3)">🎵 Sin MP3 — sincroniza con Google Drive para reproducir</span></div>`}`;
+      </div></div>`:`<div class="audio-bar"><span style="font-size:11px;color:var(--text3)">🎵 Sin MP3 — sincroniza con Google Drive para reproducir</span></div>`}
+    <div id="edit-song-panel" class="edit-song-panel" style="display:none"></div>`;
+}
+function toggleEditPanel(id){
+  const panel=document.getElementById('edit-song-panel');
+  if(!panel)return;
+  if(panel.style.display!=='none'&&panel.dataset.songId==id){
+    panel.style.display='none';return;
+  }
+  panel.dataset.songId=id;
+  const s=songs.find(x=>x.id===id);
+  if(!s)return;
+  const momChips=MOMENTS.map(m=>{
+    const on=s.moments.includes(m.name);
+    return`<button type="button" class="edit-moment-chip ${on?'on':''}"
+      style="${on?'background:'+m.color+';border-color:'+m.color:''}"
+      data-moment="${m.name}"
+      onclick="toggleMomentChip(this,'${m.name}')">${m.name}</button>`;
+  }).join('');
+  panel.innerHTML=`
+    <div class="edit-field-name">
+      <label>Nombre de la canción</label>
+      <input type="text" id="edit-title" value="${s.title.replace(/"/g,'&quot;')}">
+    </div>
+    <div class="edit-field-author">
+      <label>Autor</label>
+      <input type="text" id="edit-author" value="${(s.author||'').replace(/"/g,'&quot;')}">
+    </div>
+    <div class="edit-moments-wrap">
+      <label>Categorías (puede ser más de una)</label>
+      <div class="edit-moments-chips">${momChips}</div>
+    </div>
+    <button class="edit-save-btn" onclick="saveEditSong(${id})">💾 Guardar</button>
+    <button class="edit-delete-btn" onclick="deleteSong(${id})">🗑 Eliminar</button>`;
+  panel.style.display='flex';
+}
+function toggleMomentChip(btn,name){
+  const on=btn.classList.toggle('on');
+  const m=MOMENTS.find(x=>x.name===name);
+  if(on){btn.style.background=m?m.color:'';btn.style.borderColor=m?m.color:'';}
+  else{btn.style.background='';btn.style.borderColor='';}
+}
+function saveEditSong(id){
+  const s=songs.find(x=>x.id===id);if(!s)return;
+  const newTitle=document.getElementById('edit-title').value.trim();
+  const newAuthor=document.getElementById('edit-author').value.trim();
+  const selectedMoments=[...document.querySelectorAll('.edit-moment-chip.on')].map(b=>b.dataset.moment);
+  if(!newTitle){showToast('El nombre no puede estar vacío');return;}
+  if(!selectedMoments.length){showToast('Selecciona al menos una categoría');return;}
+  s.title=newTitle;
+  s.author=newAuthor;
+  s.moments=selectedMoments;
+  localStorage.setItem('sng3',JSON.stringify(songs));
+  document.getElementById('edit-song-panel').style.display='none';
+  renderList();renderFilterChips();
+  renderSongDetail(currentSong.key);
+  showToast('Canción actualizada ✓');
+}
+function deleteSong(id){
+  if(!confirm('¿Eliminar esta canción de la lista local?'))return;
+  songs=songs.filter(s=>s.id!==id);
+  localStorage.setItem('sng3',JSON.stringify(songs));
+  currentSong=null;
+  document.getElementById('song-detail').innerHTML=`<div class="empty-state"><div class="icon">🎵</div><h3>Selecciona una canción</h3></div>`;
+  renderList();renderFilterChips();
+  showToast('Canción eliminada');
 }
 function transposeBy(delta,currentKey){
   const i=keyIdx(currentKey),isMin=keyIsMinor(currentKey);
@@ -1302,7 +1483,15 @@ function showView(v){
 }
 function filterSongs(){searchQuery=document.getElementById('search-input').value;renderList();}
 function filterByMoment(m){currentFilter=m;renderFilterChips();renderList();}
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  sb.classList.toggle('open');
+  document.getElementById('sidebar-overlay').style.display=sb.classList.contains('open')?'block':'none';
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').style.display='none';
+}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
 // ═══════════════════════════════════════════════════════════
