@@ -255,7 +255,7 @@ nav button.active::after{
 .pauta-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px;}
 .pauta-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;}
 .pauta-actions{display:flex;gap:6px;flex-wrap:wrap;}
-.pauta-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem;}
+.pauta-meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:1rem;}
 .meta-field label{font-size:11px;color:var(--text3);display:block;margin-bottom:3px;font-weight:500;}
 .meta-field input{
   width:100%;background:var(--surface);border:1px solid var(--border2);
@@ -264,6 +264,7 @@ nav button.active::after{
 }
 .meta-field input:focus{border-color:var(--accent);}
 .meta-field input:read-only{background:var(--surface3);color:var(--text3);cursor:default;}
+.meta-field select:disabled{background:var(--surface3);color:var(--text3);cursor:default;opacity:1;}
 .moments-grid{display:flex;flex-direction:column;gap:6px;}
 
 /* ── MOMENT CARD ── */
@@ -656,7 +657,34 @@ body.is-public .public-view{
         </div>
         <div class="pauta-meta">
           <div class="meta-field"><label>Fecha</label><input type="date" id="pauta-fecha"></div>
-          <div class="meta-field"><label>Liturgia / Tiempo</label><input type="text" id="pauta-liturgia" placeholder="Ej: Domingo Ordinario XXIII"></div>
+          <div class="meta-field"><label>Tipo de Celebración</label>
+            <select id="pauta-tipo" onchange="savePauta()" style="width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);padding:6px 10px;font-family:inherit;font-size:13px;outline:none;transition:border-color .12s;">
+              <option value="">— Seleccionar —</option>
+              <optgroup label="Misa semanal">
+                <option>Misa de lunes</option>
+                <option>Misa de martes</option>
+                <option>Misa de miércoles</option>
+                <option>Misa de jueves</option>
+                <option>Misa de viernes</option>
+                <option>Misa de sábado</option>
+                <option>Misa de domingo</option>
+              </optgroup>
+              <optgroup label="Sacramentos">
+                <option>Confirmaciones</option>
+                <option>Primera Comunión</option>
+                <option>Bautizos</option>
+                <option>Matrimonio</option>
+              </optgroup>
+              <optgroup label="Otras celebraciones">
+                <option>Responsos</option>
+                <option>Misa especial</option>
+                <option>Vigilia</option>
+                <option>Vía Crucis</option>
+                <option>Rosario</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="meta-field"><label>Liturgia / Tiempo litúrgico</label><input type="text" id="pauta-liturgia" placeholder="Ej: Domingo Ordinario XXIII"></div>
           <div class="meta-field"><label>Parroquia / Comunidad</label><input type="text" id="pauta-parroquia" placeholder="Ej: Parroquia San Francisco"></div>
           <div class="meta-field"><label>Responsable</label><input type="text" id="pauta-responsable" placeholder="Ej: Coro de jóvenes"></div>
         </div>
@@ -796,6 +824,8 @@ function applyRoleUI(){
     const el=document.getElementById(id);
     if(el)el.readOnly=!isDirector();
   });
+  const tipoEl=document.getElementById('pauta-tipo');
+  if(tipoEl)tipoEl.disabled=!isDirector();
   // Nav config: ocultar para integrante? No, mostrar pero restringir contenido
   renderConfigView();
 }
@@ -919,14 +949,19 @@ let audioEl=null,playing=false;
 const DEFAULT_MOMENTS=[
   {name:'Entrada',color:'#5aaa7a'},
   {name:'Kyrie',color:'#a064dc'},
+  {name:'Salmo',color:'#d4822a'},
+  {name:'Aclamación',color:'#e0b800'},
   {name:'Ofertorio',color:'#5a8cdc'},
   {name:'Comunión',color:'#c9a84c'},
+  {name:'Comunión Espiritual',color:'#b07d3a'},
+  {name:'Proclamación',color:'#6ab0c0'},
+  {name:'Secuencia',color:'#c06090'},
   {name:'Final',color:'#e05a5a'}
 ];
 let MOMENTS=JSON.parse(localStorage.getItem('moments3')||'null')||DEFAULT_MOMENTS;
 function saveMoments(){localStorage.setItem('moments3',JSON.stringify(MOMENTS));}
 
-let pauta=JSON.parse(localStorage.getItem('pau3')||'null')||{fecha:'',liturgia:'',parroquia:'',responsable:'',slots:{}};
+let pauta=JSON.parse(localStorage.getItem('pau3')||'null')||{fecha:'',tipo:'',liturgia:'',parroquia:'',responsable:'',slots:{}};
 
 // ═══════════════════════════════════════════════════════════
 //  FILTROS / CHIPS
@@ -1208,6 +1243,7 @@ function renderMoments(){
       </div>
     </div>`).join('');
   const f=document.getElementById('pauta-fecha');if(f)f.value=pauta.fecha||'';
+  const ti=document.getElementById('pauta-tipo');if(ti)ti.value=pauta.tipo||'';
   const l=document.getElementById('pauta-liturgia');if(l)l.value=pauta.liturgia||'';
   const p=document.getElementById('pauta-parroquia');if(p)p.value=pauta.parroquia||'';
   const r=document.getElementById('pauta-responsable');if(r)r.value=pauta.responsable||'';
@@ -1255,6 +1291,7 @@ function clearPauta(){
 }
 function savePauta(){
   pauta.fecha=document.getElementById('pauta-fecha')?.value||pauta.fecha;
+  pauta.tipo=document.getElementById('pauta-tipo')?.value||pauta.tipo;
   pauta.liturgia=document.getElementById('pauta-liturgia')?.value||pauta.liturgia;
   pauta.parroquia=document.getElementById('pauta-parroquia')?.value||pauta.parroquia;
   pauta.responsable=document.getElementById('pauta-responsable')?.value||pauta.responsable;
@@ -1340,7 +1377,7 @@ function deleteCat(name){
 // ═══════════════════════════════════════════════════════════
 function buildPublicUrl(){
   savePauta();
-  const data={fecha:pauta.fecha,liturgia:pauta.liturgia,parroquia:pauta.parroquia,
+  const data={fecha:pauta.fecha,tipo:pauta.tipo,liturgia:pauta.liturgia,parroquia:pauta.parroquia,
     slots:pauta.slots,moments:MOMENTS.map(m=>({name:m.name,color:m.color}))};
   return location.href.split('?')[0]+'?asamblea='+encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(data)))));
 }
@@ -1370,7 +1407,8 @@ function loadPublicView(encoded){
     const moments=data.moments||[];
     let html=`<div class="pub-header">
       <div class="pub-title">✝ TEMPVS7 — Pauta de Misa</div>
-      <div class="pub-meta">${data.fecha?'📅 '+data.fecha:''} ${data.liturgia?'· '+data.liturgia:''}</div>
+      <div class="pub-meta">${data.tipo?'🙏 '+data.tipo:''} ${data.fecha?'· 📅 '+data.fecha:''}</div>
+      <div class="pub-meta">${data.liturgia?'✝ '+data.liturgia:''}</div>
       ${data.parroquia?`<div class="pub-meta">⛪ ${data.parroquia}</div>`:''}
     </div>`;
     moments.forEach(m=>{
